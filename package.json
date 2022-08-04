@@ -1,0 +1,32 @@
+{
+  "name": "small_vue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "/dist/index.cjs",
+  "module": "/dist/index.js",
+  "types": "/dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup src/*.ts --format cjs,esm",
+    "test:run": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/faga/small_vue.git"
+  },
+  "author": "faga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/faga/small_vue/issues"
+  },
+  "homepage": "https://github.com/faga/small_vue#readme",
+  "devDependencies": {
+    "tsup": "^6.2.1",
+    "typescript": "^4.6.3",
+    "vite": "^3.0.4",
+    "vitest": "^0.20.3"
+  },
+  "files": [
+    "./bundle.js"
+  ]
+}
