@@ -1,65 +1,9 @@
-# @faga/packtool
-A pack tool integrating webpack and rollup
+# vue.js 设计与实现
 
-# start
-**install package**
-`npm install @faga/packtool`
+## vue设计理念
 
-**npm scripts**
+## vue.js 响应式系统
 
-you can add `npm scripts` or install it globally 
+Vue.js 响应式系统主要依靠 effect函数 和 Proxy数据劫持。
 
-edit your `package.json`
-
-```
-"scripts": {
-    "build": "pack"
- },
-```
-
-**configure file**
-
-append `packTool.config.js` in your root directory like `webpack.config.js`
-
-```
-// the simplest configure file
-module.exports = {
-    entry:['./src/entry1.js'],
-}
-```
-
-you can append `plugin` or `loader` in `packTool.config.js`,like this:
-
-```
-{
-    entry:['./src/entry1.ts'],
-    plugins:[plugin1],
-    module:{
-        rules:[
-            {
-                test:/\.js$/g,
-                include:[loader1]
-            }
-        ]
-    }
-}
-```
-
-## example
-
-```
-/src/entry
-import {a} from './module/module1.js'
-function sum(b){
-    return a+b
-}
-```
-
-```
-/src/module/module1.js
-export const a = 1;
-```
-
-run `npm run build`
-
-you will get `dist/output[entry1].js`
+首先我们需要一个桶来放置我们需要所有值的副作用函数。这个桶的设计为
