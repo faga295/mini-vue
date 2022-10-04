@@ -37,10 +37,21 @@ export const mutableHandler: ProxyHandler<object> = {
 const readonlyGet = createGetter(true);
 export const readonlyHandler: ProxyHandler<object> = {
     get: readonlyGet,
-    set(target, key){
+    set(){
         return true;
     },
-    deleteProperty(target, key) {
+    deleteProperty() {
        return true;
     },
+}
+
+const shallowReadonlyGet = createGetter(false, true);
+export const shallowReadonlyHandler: ProxyHandler<object> = {
+    get: shallowReadonlyGet,
+    set() {
+        return true;
+    },
+    deleteProperty() {
+        return true;
+    }
 }
