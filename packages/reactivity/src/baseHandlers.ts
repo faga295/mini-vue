@@ -1,9 +1,14 @@
 import { track, trigger } from './effect';
+import { reactive } from './reactive';
 
 const createGetter = (isReadonly = false, shallow = false) =>
-    function get(target, key: string | symbol, receiver: object){
+    function get(target: object, key: string | symbol, receiver: object){
         const res = Reflect.get(target, key, receiver)
         track(target, key);
+        if (shallow) return res;
+        if (res !== null && typeof res === 'object') {
+            return reactive(res);
+        }
         return res;
     }
 
