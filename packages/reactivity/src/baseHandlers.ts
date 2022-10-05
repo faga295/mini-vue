@@ -22,6 +22,7 @@ const createGetter = (isReadonly = false, shallow = false) =>
      * }
      **/
     const res = Reflect.get(target, key, receiver);
+    // add effects
     track(target, key);
     if (shallow) return res;
     if (!shallow && res !== null && typeof res === 'object') {
@@ -39,6 +40,7 @@ const createSetter = () =>
     receiver: object
   ) {
     Reflect.set(target, key, newValue, receiver);
+    // trigger effects
     trigger(target, key);
     return true;
   };

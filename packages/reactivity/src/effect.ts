@@ -5,13 +5,16 @@ export interface ReactiveEffectOptions {
   onStop?: () => void;
 }
 type Dep = Set<ReactiveEffect>;
+
 export const ITERATE_KEY = Symbol('iterate');
+
 export interface ReactiveEffectRunner<T = any> {
   (): T;
   effect: ReactiveEffect;
 }
 
 export let activeEffect: ReactiveEffect | undefined;
+
 export const targetMap = new WeakMap<any, any>();
 export class ReactiveEffect<T = any> {
   active = true;
