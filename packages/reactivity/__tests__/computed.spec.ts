@@ -1,8 +1,8 @@
-import { computed } from "../src/computed";
-import { reactive } from "../src/reactive";
+import { computed } from '../src/computed';
+import { reactive } from '../src/reactive';
 
-describe("computed", () => {
-  it("happy path", () => {
+describe('computed', () => {
+  it('happy path', () => {
     const value = reactive({
       foo: 1,
     });
@@ -14,7 +14,7 @@ describe("computed", () => {
     expect(getter.value).toBe(2);
   });
 
-  it("should compute lazily", () => {
+  it('should compute lazily', () => {
     const value = reactive({
       foo: 1,
     });

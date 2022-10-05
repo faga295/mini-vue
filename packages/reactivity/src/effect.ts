@@ -1,10 +1,11 @@
-type EffectScheduler = (...args:any[]) => any
+type EffectScheduler = (...args: any[]) => any;
 export interface ReactiveEffectOptions {
   lazy?: boolean;
   scheduler?: EffectScheduler;
   onStop?: () => void;
 }
-type Dep = Set<ReactiveEffect>
+type Dep = Set<ReactiveEffect>;
+export const ITERATE_KEY = Symbol('iterate');
 export interface ReactiveEffectRunner<T = any> {
   (): T;
   effect: ReactiveEffect;
@@ -18,9 +19,8 @@ export class ReactiveEffect<T = any> {
   onStop?: () => void;
   constructor(
     public fn: () => T,
-    public scheduler:EffectScheduler | null = null
-  ) {
-  }
+    public scheduler: EffectScheduler | null = null
+  ) {}
   run() {
     activeEffect = this;
     // cleanupEffect(this);
@@ -41,7 +41,6 @@ export function stop(runner: ReactiveEffectRunner) {
   runner.effect.stop();
 }
 
-
 export function effect<T>(fn: () => T, options?: ReactiveEffectOptions) {
   const _effect = new ReactiveEffect(fn);
   if (options) {
@@ -53,16 +52,16 @@ export function effect<T>(fn: () => T, options?: ReactiveEffectOptions) {
   return runner;
 }
 
-export function cleanupEffect(effect: ReactiveEffect){
+export function cleanupEffect(effect: ReactiveEffect) {
   const { deps } = effect;
   if (deps.length) {
-    for (let i = 0;i < deps.length; i++) {
+    for (let i = 0; i < deps.length; i++) {
       deps[i].delete(effect);
     }
     effect.deps = [];
   }
 }
-export function track(target: object, key:any) {
+export function track(target: object, key: any) {
   if (activeEffect) {
     let depsMap = targetMap.get(target);
     if (!depsMap) {
@@ -70,18 +69,18 @@ export function track(target: object, key:any) {
     }
     let dep = depsMap.get(key);
     if (!dep) {
-      depsMap.set(key, (dep = new Set()))
+      depsMap.set(key, (dep = new Set()));
     }
     trackEffects(dep);
   }
 }
-export function trackEffects(dep:Dep){
+export function trackEffects(dep: Dep) {
   if (activeEffect.active) {
     dep.add(activeEffect);
   }
   activeEffect.deps.push(dep);
 }
-export function trigger(target: object, key:any, oldValue?: unknown, newValue?: unknown) {     
+export function trigger(target: object, key: any) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
   const deps = depsMap.get(key);
@@ -89,13 +88,13 @@ export function trigger(target: object, key:any, oldValue?: unknown, newValue?: 
 }
 
 export function triggerEffects(effects: Set<ReactiveEffect>) {
-  effects.forEach((effect) => triggerEffect(effect));
+  effects.forEach(effect => triggerEffect(effect));
 }
 
 function triggerEffect(effect: ReactiveEffect) {
   if (effect.scheduler) {
-    effect.scheduler()
+    effect.scheduler();
   } else {
-    effect.run()
+    effect.run();
   }
 }

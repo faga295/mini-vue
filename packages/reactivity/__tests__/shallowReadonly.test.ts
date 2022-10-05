@@ -1,11 +1,16 @@
-import { isReactive, isReadonly, readonly, shallowReadonly } from "../src/reactive";
+import {
+  isReactive,
+  isReadonly,
+  readonly,
+  shallowReadonly,
+} from '../src/reactive';
 
-describe("shallowReadonly", () => {
-  test("should not make non-reactive properties reactive", () => {
+describe('shallowReadonly', () => {
+  test('should not make non-reactive properties reactive', () => {
     const props = shallowReadonly({ n: { foo: 1 } });
     expect(isReactive(props.n)).toBe(false);
   });
-  test("should differentiate from normal readonly calls", async () => {
+  test('should differentiate from normal readonly calls', () => {
     const original = { foo: {} };
     const shallowProxy = shallowReadonly(original);
     const reactiveProxy = readonly(original);
