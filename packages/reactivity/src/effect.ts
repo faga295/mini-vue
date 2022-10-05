@@ -4,7 +4,7 @@ export interface ReactiveEffectOptions {
   scheduler?: EffectScheduler;
   onStop?: () => void;
 }
-
+type Dep = Set<ReactiveEffect>
 export interface ReactiveEffectRunner<T = any> {
   (): T;
   effect: ReactiveEffect;
@@ -72,14 +72,15 @@ export function track(target: object, key:any) {
     if (!dep) {
       depsMap.set(key, (dep = new Set()))
     }
-    
-    if (activeEffect.active) {
-      dep.add(activeEffect);
-    }
-    activeEffect.deps.push(dep);
+    trackEffects(dep);
   }
 }
-
+export function trackEffects(dep:Dep){
+  if (activeEffect.active) {
+    dep.add(activeEffect);
+  }
+  activeEffect.deps.push(dep);
+}
 export function trigger(target: object, key:any, oldValue?: unknown, newValue?: unknown) {     
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
@@ -87,7 +88,7 @@ export function trigger(target: object, key:any, oldValue?: unknown, newValue?: 
   triggerEffects(deps);
 }
 
-function triggerEffects(effects: ReactiveEffect[]) {
+export function triggerEffects(effects: Set<ReactiveEffect>) {
   effects.forEach((effect) => triggerEffect(effect));
 }
 

@@ -23,9 +23,9 @@ const createGetter = (isReadonly = false, shallow = false) =>
     }
 
 const createSetter = (shallow = false) => function set(target: object, key: string | symbol, newValue: any, receiver: object){
-    const res = Reflect.set(target, key, newValue, receiver);
+    Reflect.set(target, key, newValue, receiver);
     trigger(target, key);
-    return res;
+    return true;
 } 
 const get = createGetter();
 const set = createSetter();
@@ -44,7 +44,11 @@ export const readonlyHandler: ProxyHandler<object> = {
        return true;
     },
 }
-
+const shallowReactiveGet = createGetter(true, true);
+export const shallowReactiveHandler: ProxyHandler<object> = {
+    get: shallowReactiveGet,
+    set,
+}
 const shallowReadonlyGet = createGetter(false, true);
 export const shallowReadonlyHandler: ProxyHandler<object> = {
     get: shallowReadonlyGet,
