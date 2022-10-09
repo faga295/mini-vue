@@ -13,4 +13,5 @@ export interface ComponentInstance {
   isMounted: boolean;
   subTree: VNode;
   props: any;
+  setupState: any;
 }

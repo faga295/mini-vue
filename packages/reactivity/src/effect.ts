@@ -96,7 +96,7 @@ export function triggerEffects(effects: Set<ReactiveEffect>) {
 
 function triggerEffect(effect: ReactiveEffect) {
   if (effect.scheduler) {
-    effect.scheduler();
+    effect.scheduler(effect.run);
   } else {
     effect.run();
   }

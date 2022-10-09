@@ -12,5 +12,6 @@ module.exports = {
     'no-lonely-if': 'off',
     'unicorn/prefer-modern-dom-apis': 'off',
     'no-restricted-syntax': 'off',
+    'import/order': 'off',
   },
 };

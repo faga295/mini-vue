@@ -40,7 +40,10 @@ interface Invoker extends EventListener {
   value?: any;
 }
 function patchEvent(
-  el: HTMLElement & { _vei?: Record<string, Invoker | undefined> },
+  el: HTMLElement & {
+    _vei?: Record<string, Invoker | undefined>;
+    component?: any;
+  },
   rawName: string,
   prev: any,
   next: any
@@ -51,9 +54,17 @@ function patchEvent(
     if (!existingInvoker) {
       existingInvoker = e => {
         if (Array.isArray(next)) {
-          next.forEach(fn => fn(e));
+          if (el.component) {
+            next.forEach(fn => fn.call(el.component, e));
+          } else {
+            next.forEach(fn => fn(e));
+          }
         } else {
-          next(e);
+          if (el.component) {
+            next.call(el.component, e);
+          } else {
+            next(e);
+          }
         }
       };
       existingInvoker.value = next;

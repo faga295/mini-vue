@@ -8,10 +8,10 @@ export const Comment = Symbol('Comment');
 export const Fragment = Symbol('Fragment');
 export type VNodeTypes =
   | string
+  | Component
   | typeof Text
   | typeof Comment
-  | typeof Fragment
-  | Component;
+  | typeof Fragment;
 export interface VNode<HostElement = HTMLElement> {
   __v_isVNode: boolean;
   type: VNodeTypes;
@@ -19,6 +19,7 @@ export interface VNode<HostElement = HTMLElement> {
   el: HostElement;
   shapeFlag: number;
   props: RawProps;
+  component?: any;
 }
 export function createVNode(
   type: VNodeTypes,

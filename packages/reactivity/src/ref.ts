@@ -27,8 +27,6 @@ class RefImpl<T> {
     return this._value;
   }
   set value(newVal) {
-    console.log(newVal);
-
     if (newVal === this._rawValue) return;
     this._value = toReactive(newVal);
     this._rawValue = newVal;
