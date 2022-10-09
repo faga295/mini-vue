@@ -1,13 +1,14 @@
 {
-  "name": "reactivity",
+  "name": "runtime-core",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "module": "../../lib/reactivity/src/index.mjs",
-  "types": "../../lib/reactivity/src/index.d.ts",
-  "main": "../../lib/reactivity/src/index.js",
+  "dependencies": {
+    "reactivity": "workspace:*"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

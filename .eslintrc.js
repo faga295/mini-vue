@@ -9,5 +9,8 @@ module.exports = {
     'unicorn/explicit-length-check': 'off',
     'unicorn/no-for-loop': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    'no-lonely-if': 'off',
+    'unicorn/prefer-modern-dom-apis': 'off',
+    'no-restricted-syntax': 'off',
   },
 };
