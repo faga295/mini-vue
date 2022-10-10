@@ -1,6 +1,7 @@
 node_modules
-playground
 dist
 lib
 __test__
 bundle.js
+auto-imports.d.ts
+.eslintrc-auto-import.json
