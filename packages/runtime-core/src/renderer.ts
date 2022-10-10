@@ -213,25 +213,20 @@ export function baseCreateRenderer(options: RendererOptions): Renderer {
       }
     });
   };
-  const patchElement = (n1: VNode, n2: VNode, container: HTMLElement) => {
+  const patchElement = (n1: VNode, n2: VNode) => {
     patchProps(n1.el, n2, n1.props, n2.props);
 
     patchChildren(n1, n2);
   };
-  const patchComponent = (n1: VNode, n2: VNode, container: HTMLElement) => {
+  const patchComponent = (n1: VNode, n2: VNode) => {
     const instance = (n2.component = n1.component);
     const props = instance.props;
 
     if (hasPropsChanged(n1.props, n2.props)) {
-      const [nextProps, nextAttr] = resolveProps(
-        (n2.type as Component).props,
-        n2.props
-      );
+      const [nextProps] = resolveProps((n2.type as Component).props, n2.props);
 
       for (const key in nextProps) {
         if (props[key] !== nextProps[key]) {
-          console.log(key);
-
           props[key] = nextProps[key];
         }
       }
@@ -244,14 +239,14 @@ export function baseCreateRenderer(options: RendererOptions): Renderer {
     if (!n1) {
       mountElement(n2, container);
     } else {
-      patchElement(n1, n2, container);
+      patchElement(n1, n2);
     }
   };
   const processComponent = (n1: VNode, n2: VNode, container: HTMLElement) => {
     if (!n1) {
       mountComponent(n2, container);
     } else {
-      patchComponent(n1, n2, container);
+      patchComponent(n1, n2);
     }
   };
   const processText = (n1: VNode, n2: VNode, container: HTMLElement) => {
