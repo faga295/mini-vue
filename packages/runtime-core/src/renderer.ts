@@ -181,17 +181,22 @@ export function baseCreateRenderer(options: RendererOptions): Renderer {
       },
     });
     vnode.component = instance;
-    effect(() => {
-      const subTree = render.call(renderContext);
-      if (!instance.isMounted) {
-        patch(null, subTree, container);
-        instance.isMounted = true;
-      } else {
-        patch(instance.subTree, subTree, container);
+    effect(
+      () => {
+        const subTree = render.call(renderContext);
+        if (!instance.isMounted) {
+          patch(null, subTree, container);
+          instance.isMounted = true;
+        } else {
+          patch(instance.subTree, subTree, container);
+        }
+        instance.subTree = subTree;
+        vnode.el = subTree.el;
+      },
+      {
+        scheduler: queueJob,
       }
-      instance.subTree = subTree;
-      vnode.el = subTree.el;
-    });
+    );
     // @ts-ignore
     vnode.el.component = renderContext;
   };
@@ -270,7 +275,7 @@ export function baseCreateRenderer(options: RendererOptions): Renderer {
     if (!n1) {
       mountChildren(n2.children as VNodeArrayChildren, container);
     } else {
-      patchChildren(n1, n2, container);
+      patchChildren(n1, n2);
     }
   };
   const remove = (vnode: VNode) => {
