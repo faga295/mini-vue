@@ -4,6 +4,8 @@
 
 实现细节可参考**vuejs 设计与实现**以及[vue](https://github.com/vuejs/core)源码
 
+个人总结放在[docs](https://github.com/faga1/mini-vue/tree/master/docs)目录下
+
 ## To do
 
 ### reactivity
