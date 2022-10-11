@@ -1,0 +1,92 @@
+reTypewriter Snapshots v1
+
+--01----------
+
+--02----------
+export let activeEffect: ReactiveEffect | undefined;
+export class ReactiveEffect<T = any> {
+  deps: Set<ReactiveEffect>[] = [];
+  constructor(public fn: () => T) {}
+  run() {
+    activeEffect = this;
+    return this.fn();
+  }
+}
+
+export function effect<T>(fn: () => T, options?: any) {
+  const _effect = new ReactiveEffect<T>(fn);
+  if (!options || !options.lazy) _effect.run();
+}
+
+--03----------
+export let activeEffect: ReactiveEffect | undefined;
+export const targetMap = new WeakMap<any, any>();
+export class ReactiveEffect<T = any> {
+  deps: Set<ReactiveEffect>[] = [];
+  constructor(public fn: () => T) {}
+  run() {
+    activeEffect = this;
+    return this.fn();
+  }
+}
+
+export function effect<T>(fn: () => T, options?: any) {
+  const _effect = new ReactiveEffect<T>(fn);
+  if (!options || !options.lazy) _effect.run();
+}
+
+export function track(target: object, key: any) {
+  if (activeEffect) {
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()));
+    }
+    let dep = depsMap.get(key);
+    if (!dep) {
+      depsMap.set(key, (dep = new Set()));
+    }
+    dep.add(activeEffect);
+  }
+}
+
+-----options--
+pause: true
+--04----------
+export let activeEffect: ReactiveEffect | undefined;
+export const targetMap = new WeakMap<any, any>();
+export class ReactiveEffect<T = any> {
+  deps: Set<ReactiveEffect>[] = [];
+  constructor(public fn: () => T) {}
+  run() {
+    activeEffect = this;
+    return this.fn();
+  }
+}
+
+export function effect<T>(fn: () => T, options?: any) {
+  const _effect = new ReactiveEffect<T>(fn);
+  if (!options || !options.lazy) _effect.run();
+}
+
+export function track(target: object, key: any) {
+  if (activeEffect) {
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()));
+    }
+    let dep = depsMap.get(key);
+    if (!dep) {
+      depsMap.set(key, (dep = new Set()));
+    }
+    dep.add(activeEffect);
+  }
+}
+export function trigger(target: object, key: any) {
+  const depsMap = targetMap.get(target);
+  if (!depsMap) return;
+  const deps = depsMap.get(key);
+  deps.forEach(effect => effect.run());
+}
+-----options--
+pause: true
+--------------
