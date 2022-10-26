@@ -39,6 +39,19 @@ describe('effect', () => {
     expect(dummy1).toBe(1);
     expect(dummy2).toBe(1);
   });
+  it('should observe function call chains', () => {
+    let dummy;
+    const counter = reactive({ num: 0 });
+    effect(() => (dummy = getNum()));
+
+    function getNum() {
+      return counter.num;
+    }
+
+    expect(dummy).toBe(0);
+    counter.num = 2;
+    expect(dummy).toBe(2);
+  });
   it('scheduler', () => {
     let dummy;
     let run: any;
@@ -80,14 +93,5 @@ describe('effect', () => {
     // stopped effect should still be manually callable
     runner();
     expect(dummy).toBe(3);
-  });
-  it('events: onStop', () => {
-    const onStop = vi.fn(() => {});
-    const runner = effect(() => {}, {
-      onStop,
-    });
-
-    stop(runner);
-    expect(onStop).toHaveBeenCalled();
   });
 });

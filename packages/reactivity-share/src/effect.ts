@@ -1,57 +1,34 @@
-type EffectScheduler = (fn: Function) => any;
-interface ReactiveEffectOptions {
-  lazy?: boolean;
-  scheduler?: EffectScheduler;
-  onStop?: () => any;
-}
-interface ReactiveEffectRunner<T = any> {
-  (): T;
-  effect: ReactiveEffect;
-}
-export const ITERATE_KEY = Symbol('interate');
 export let activeEffect: ReactiveEffect | undefined;
 export const targetMap = new WeakMap<any, any>();
 export class ReactiveEffect<T = any> {
   active = true;
   deps: Set<ReactiveEffect>[] = [];
-  onStop?: () => void = null;
-  public scheduler?: EffectScheduler;
+  scheduler?: (fn: Function) => any = null;
   constructor(public fn: () => T) {}
   run() {
     activeEffect = this;
     return this.fn();
   }
   stop() {
-    if (this.active) {
-      cleanupEffect(this);
-      if (this.onStop) {
-        this.onStop();
-      }
+    if (this.active === true) {
+      this.deps.forEach(dep => {
+        dep.delete(this);
+      });
       this.active = false;
     }
   }
 }
-
-export function stop(runner: ReactiveEffectRunner) {
+export function stop(runner: any) {
   return runner.effect.stop();
 }
-
-function cleanupEffect(effect: ReactiveEffect) {
-  effect.deps.forEach(dep => {
-    dep.delete(effect);
-  });
-}
-export function effect<T>(fn: () => T, options?: ReactiveEffectOptions) {
+export function effect<T>(fn: () => T, options?: any) {
   const _effect = new ReactiveEffect<T>(fn);
-  if (options) {
-    Object.assign(_effect, options);
-  }
+  Object.assign(_effect, options);
   if (!options || !options.lazy) _effect.run();
   const runner = _effect.run.bind(_effect);
-  runner.effect = _effect;
+  runner.effect = activeEffect;
   return runner;
 }
-
 export function track(target: object, key: any) {
   if (activeEffect) {
     let depsMap = targetMap.get(target);
@@ -62,28 +39,21 @@ export function track(target: object, key: any) {
     if (!dep) {
       depsMap.set(key, (dep = new Set()));
     }
-    trackEffects(dep);
+    if (activeEffect.active) {
+      dep.add(activeEffect);
+    }
+    activeEffect.deps.push(dep);
   }
-}
-export function trackEffects(dep: Set<ReactiveEffect>) {
-  if (activeEffect.active) {
-    dep.add(activeEffect);
-  }
-  activeEffect.deps.push(dep);
 }
 export function trigger(target: object, key: any) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
   const deps = depsMap.get(key);
-  triggerEffects(deps);
-}
-export function triggerEffects(deps: Set<ReactiveEffect>) {
-  deps.forEach(effect => triggerEffect(effect));
-}
-export function triggerEffect(effect: ReactiveEffect) {
-  if (effect.scheduler) {
-    effect.scheduler(effect.run);
-  } else {
-    effect.run();
-  }
+  deps.forEach(effect => {
+    if (effect.scheduler) {
+      effect.scheduler(effect.run);
+    } else {
+      effect.run();
+    }
+  });
 }
